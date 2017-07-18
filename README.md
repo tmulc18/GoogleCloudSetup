@@ -23,7 +23,7 @@ Need to have quota > 0 in the region you want to compute.
 # Logging into the server
 
 1. Navigate to the vm instances page and find your ip address
-2. `ssh -i ~/.ssh/[KEY_FILE_NAME].pub [IP_ADDRESS]`
+2. `ssh -i ~/.ssh/[KEY_FILE_NAME] [IP_ADDRESS]`
 
 # Install GPU drivers, Python packages, etc. 
 
