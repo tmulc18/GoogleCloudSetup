@@ -11,6 +11,7 @@ Need to have quota > 0 in the region you want to compute.
 2. Main menu (top left)
 3. VM Instances
 4. Custom settings
+5. Choose instance with GPU and pick Ubuntu 16.04 LTS as OS
 
 [VM Instance link](https://console.cloud.google.com/compute/instances)
 
