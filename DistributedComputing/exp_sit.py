@@ -5,17 +5,17 @@ import time
 FLAGS = None
 
 def main():
-	with tf.device('/gpu:%d'%FLAGS.gpu_id):
+	with tf.device('/gpu:0'):
 		a = tf.constant(1.,shape=[2],dtype=tf.float32)
 		b = tf.constant(2,shape=[2],dtype=tf.float32)
 		c=a+b
-
-	config = tf.ConfigProto(allow_soft_placement=False)
-	config.gpu_options.allow_growth = True
+	gpu_options = tf.GPUOptions(allow_growth=True,allocator_type="BFC",visible_device_list="%d"%FLAGS.gpu_id)
+	config = tf.ConfigProto(gpu_options=gpu_options,allow_soft_placement=False,device_count={'GPU':1},log_device_placement=True)
+	#config.gpu_options.allow_growth = True
 	with tf.Session(config=config) as sess:
 		r = sess.run(c)
 		print(r)
-	time.sleep(FLAGS.sleep)
+		time.sleep(FLAGS.sleep)
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
