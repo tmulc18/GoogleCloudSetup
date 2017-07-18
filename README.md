@@ -17,13 +17,13 @@ Need to have quota > 0 in the region you want to compute.
 # [SSH Keys](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys)
 1. Generate the key `ssh-keygen -t rsa -f ~/.ssh/[KEY_FILE_NAME] -C [USERNAME]`
 2. Set permissions `chmod 400 ~/.ssh/[KEY_FILE_NAME]`
-3. In local terminal run `cat ~/.ssh/[KEY_FILE_NAME]` and copy contents
+3. In local terminal run `cat ~/.ssh/[KEY_FILE_NAME].pub` and copy contents
 4. Add key to the project [here](https://console.cloud.google.com/compute/metadata/sshKeys)
 
 # Logging into the server
 
 1. Navigate to the vm instances page and find your ip address
-2. `ssh -i ~/.ssh/[KEY_FILE_NAME] [IP_ADDRESS]`
+2. `ssh -i ~/.ssh/[KEY_FILE_NAME].pub [IP_ADDRESS]`
 
 # Install GPU drivers, Python packages, etc. 
 
