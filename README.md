@@ -33,7 +33,7 @@ Need to have quota > 0 in the region you want to compute.
 
 `source activate ~/.bashrc`
 
+# Test Install
 
-
-
-
+It's important to test your intall.  Do this with 
+`python -c "import tensorflow"` which should run without errors.
