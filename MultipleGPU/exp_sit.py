@@ -10,8 +10,7 @@ def main():
 		b = tf.constant(2,shape=[2],dtype=tf.float32)
 		c=a+b
 	gpu_options = tf.GPUOptions(allow_growth=True,allocator_type="BFC",visible_device_list="%d"%FLAGS.gpu_id)
-	config = tf.ConfigProto(gpu_options=gpu_options,allow_soft_placement=False,device_count={'GPU':1},log_device_placement=True)
-	#config.gpu_options.allow_growth = True
+	config = tf.ConfigProto(gpu_options=gpu_options,allow_soft_placement=True,device_count={'GPU':1},log_device_placement=True)
 	with tf.Session(config=config) as sess:
 		r = sess.run(c)
 		print(r)
