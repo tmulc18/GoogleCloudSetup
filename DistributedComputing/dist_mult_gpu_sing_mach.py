@@ -27,7 +27,7 @@ def main():
 			opt = tf.train.GradientDescentOptimizer(.0001).minimize(loss)
 
 		# Session
-		sv = tf.train.Supervisor(logdir=log_dir)
+		sv = tf.train.Supervisor(logdir=os.getcwd()+log_dir,is_chief=is_chief,save_model_secs=30)
 		gpu_options = tf.GPUOptions(allow_growth=True,allocator_type="BFC",visible_device_list="%d"%FLAGS.task_index)
 		config = tf.ConfigProto(gpu_options=gpu_options,allow_soft_placement=True,device_count={'GPU':1},log_device_placement=True)
 		sess = sv.prepare_or_wait_for_session(config=config)
