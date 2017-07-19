@@ -29,7 +29,7 @@ def main():
 		# Session
 		sv = tf.train.Supervisor(logdir=log_dir)
 		gpu_options = tf.GPUOptions(allow_growth=True,allocator_type="BFC",visible_device_list="%d"%FLAGS.task_index)
-		config = tf.ConfigProto(gpu_options=gpu_options,allow_soft_placement=False,device_count={'GPU':1},log_device_placement=True)
+		config = tf.ConfigProto(gpu_options=gpu_options,allow_soft_placement=True,device_count={'GPU':1},log_device_placement=True)
 		sess = sv.prepare_or_wait_for_session(config=config)
 		for i in range(1000):
 			sess.run(opt)
@@ -40,11 +40,19 @@ def main():
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
+	# Flags for defining the tf.train.ClusterSpec
 	parser.add_argument(
-		"--gpu_id",
-		type=int,
-		default=0,
-		help="ID of GPU to allocate'"
-	)
+    	"--job_name",
+    	type=str,
+    	default="",
+    	help="One of 'ps', 'worker'"
+    )
+    # Flags for defining the tf.train.Server
+	parser.add_argument(
+    	"--task_index",
+    	type=int,
+    	default=0,
+    	help="Index of task within the job"
+    )
 	FLAGS, unparsed = parser.parse_known_args()
 	main()
