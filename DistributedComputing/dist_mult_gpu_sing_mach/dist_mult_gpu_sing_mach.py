@@ -2,19 +2,29 @@ from __future__ import print_function
 import tensorflow as tf
 import argparse
 import time
+import os
 FLAGS = None
 log_dir = '/logdir'
 
 def main():
 	#Distributed Baggage
-	cluster = tf.train.ClusterSpec({'ps':['localhost:2222','localhost:2221'],
-										'worker':['localhost:2223','localhost:2224']}) #lets this node know about all other nodes
+	#with tf.device('/cpu:0'):
+        cluster = tf.train.ClusterSpec({'ps':['localhost:2222'],
+                                        'worker':['localhost:2223','localhost:2224']}) #lets this node know about all other nodes
 	if FLAGS.job_name == 'ps': #checks if parameter server
-		server = tf.train.Server(cluster,job_name="ps",task_index=FLAGS.task_index)
-		server.join()
+		#gpu_options = tf.GPUOptions(allow_growth=True,allocator_type="BFC",visible_device_list="%d"%FLAGS.task_index)
+		#gpu_options = tf.GPUOptions(allow_growth=True,allocator_type="BFC",visible_device_list="0")
+		#config = tf.ConfigProto(allow_soft_placement=True,device_count={'GPU':1},log_device_placement=True,gpu_options=gpu_options)
+		with tf.device('/cpu:0'):
+			server = tf.train.Server(cluster,job_name="ps",task_index=FLAGS.task_index)
+			server.join()
 	else:
 		is_chief = (FLAGS.task_index == 0) #checks if this is the chief node
-		server = tf.train.Server(cluster,job_name="worker",task_index=FLAGS.task_index)
+		gpu_options = tf.GPUOptions(allow_growth=True,allocator_type="BFC",visible_device_list="")
+                config = tf.ConfigProto(allow_soft_placement=True,device_count={'GPU':0})
+		with tf.device('/cpu:0'):	
+			server = tf.train.Server(cluster,job_name="worker",
+						task_index=FLAGS.task_index,config=config)
 		# Graph
 		with tf.device('/gpu:0'):
 			a = tf.Variable(tf.truncated_normal(shape=[2]),dtype=tf.float32)
@@ -29,9 +39,10 @@ def main():
 		# Session
 		sv = tf.train.Supervisor(logdir=os.getcwd()+log_dir,is_chief=is_chief,save_model_secs=30)
 		gpu_options = tf.GPUOptions(allow_growth=True,allocator_type="BFC",visible_device_list="%d"%FLAGS.task_index)
-		config = tf.ConfigProto(gpu_options=gpu_options,allow_soft_placement=True,device_count={'GPU':1},log_device_placement=True)
-		sess = sv.prepare_or_wait_for_session(config=config)
+		config = tf.ConfigProto(gpu_options=gpu_options,allow_soft_placement=True)#,device_count={'GPU':1})
+		sess = sv.prepare_or_wait_for_session(server.target,config=config)
 		for i in range(1000):
+			if sv.should_stop(): break
 			sess.run(opt)
 			if i % 10 == 0:
 				r = sess.run(c)
