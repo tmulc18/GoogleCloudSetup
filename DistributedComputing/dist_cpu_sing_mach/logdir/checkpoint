@@ -1,0 +1,2 @@
+model_checkpoint_path: "/Users/tmulc/GoogleCloudSetup/DistributedComputing/dist_cpu_sing_mach/logdir/model.ckpt"
+all_model_checkpoint_paths: "/Users/tmulc/GoogleCloudSetup/DistributedComputing/dist_cpu_sing_mach/logdir/model.ckpt"
